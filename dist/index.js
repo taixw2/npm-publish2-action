@@ -1286,7 +1286,9 @@ function npmPublish(workspace) {
         const packageJSONPath = path.resolve(projectPath, 'package.json');
         const packageManifest = yield read_package_json_1.getPackageManifest(packageJSONPath);
         try {
-            yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
+            core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
+            const code = yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`], { silent: true });
+            core.info('code: ' + code);
             // 增加版本
             const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
             const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType'));

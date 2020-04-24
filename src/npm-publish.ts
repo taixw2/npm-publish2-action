@@ -10,7 +10,10 @@ export async function npmPublish(workspace: string): Promise<{ [key: string]: an
   const packageJSONPath = path.resolve(projectPath, 'package.json');
   const packageManifest = await getPackageManifest(packageJSONPath);
   try {
-    await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
+    core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
+    const code = await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`], { silent: true });
+
+    core.info('code: ' + code);
     // 增加版本
     const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
     const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType') as semver.ReleaseType);
