@@ -1,4 +1,3 @@
-import readPkgJson from 'read-package-json';
 import { existsSync, readFile } from 'fs';
 import { setFailed } from '@actions/core';
 

@@ -16,14 +16,14 @@ async function run(): Promise<void> {
   try {
     manifests = await Promise.all(workspaces.map(npmPublish));
   } catch (error) {
-    core.setFailed("npm publish fail" + error);
+    core.setFailed('npm publish fail' + error);
   }
 
   if (!process.env.GITHUB_TOKEN) return;
   try {
     await githubPublish(manifests ?? []);
   } catch (error) {
-    core.setFailed("github publish fail" + error);    
+    core.setFailed('github publish fail' + error);
   }
 }
 
