@@ -11,12 +11,13 @@ export async function npmPublish(workspace: string): Promise<{ [key: string]: an
   const packageManifest = await getPackageManifest(packageJSONPath);
   try {
     await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
-  } catch (error) {
-    // 404
-    core.info('npm view error' + error.toString());
+    // 增加版本
     const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
     const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType') as semver.ReleaseType);
     fs.writeFileSync(packageJSONPath, pkgNoFormat.replace(/"version":(\s*)".*?"/, `"version":$1"${newVersion}"`));
+  } catch (error) {
+    // 404
+    core.info('npm view error' + error.toString());
   }
 
   await exec.exec('npm', ['publish', `--registry=${core.getInput('registry')}`, core.getInput('tag:next') && '--tag=next'], {

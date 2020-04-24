@@ -1287,13 +1287,14 @@ function npmPublish(workspace) {
         const packageManifest = yield read_package_json_1.getPackageManifest(packageJSONPath);
         try {
             yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
-        }
-        catch (error) {
-            // 404
-            core.info("npm view error" + error.toString());
+            // 增加版本
             const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
             const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType'));
             fs.writeFileSync(packageJSONPath, pkgNoFormat.replace(/"version":(\s*)".*?"/, `"version":$1"${newVersion}"`));
+        }
+        catch (error) {
+            // 404
+            core.info('npm view error' + error.toString());
         }
         yield exec.exec('npm', ['publish', `--registry=${core.getInput('registry')}`, core.getInput('tag:next') && '--tag=next'], {
             cwd: projectPath,
