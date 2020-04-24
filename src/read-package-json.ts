@@ -1,16 +1,23 @@
 import readPkgJson from 'read-package-json';
+import { existsSync, readFile } from 'fs';
+import { setFailed } from '@actions/core';
 
 export async function getPackageManifest(path: string): Promise<{ [key: string]: any }> {
-  function error(...logs: string[]): void {
-    // throw new Error(...logs);
+  if (existsSync(path)) {
+    setFailed('package.json not found with ' + path);
+    return {};
   }
+
   return new Promise((resolve, reject) => {
-    readPkgJson(path, error, true, (err: Error | null, data: { [key: string]: any }) => {
+    readFile(path, { encoding: 'utf8' }, (err, data) => {
       if (err) {
         reject(err);
-        return;
       }
-      resolve(data);
+      try {
+        resolve(JSON.parse(data));
+      } catch (error) {
+        setFailed('format package fail: ' + data);
+      }
     });
   });
 }
