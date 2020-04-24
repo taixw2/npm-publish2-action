@@ -2,7 +2,7 @@ import { existsSync, readFile } from 'fs';
 import { setFailed } from '@actions/core';
 
 export async function getPackageManifest(path: string): Promise<{ [key: string]: any }> {
-  if (existsSync(path)) {
+  if (!existsSync(path)) {
     setFailed('package.json not found with ' + path);
     return {};
   }

@@ -2728,7 +2728,7 @@ function githubPublish(manifests) {
         yield exec.exec('git', ['config', 'user.name', username], { cwd: process.cwd() });
         yield exec.exec('git', ['config', 'user.email', useremail], { cwd: process.cwd() });
         try {
-            yield exec.exec('git', ['add', '-am', 'release: v' + latestVersion], { cwd: process.cwd() });
+            yield exec.exec('git', ['commit', '-am', 'release: v' + latestVersion], { cwd: process.cwd() });
             yield exec.exec('git', ['tag', 'v' + latestVersion], { cwd: process.cwd() });
             yield exec.exec('git', ['branch', '-b', 'add-release-v' + latestVersion], { cwd: process.cwd() });
             yield exec.exec('git', ['push', 'origin', 'add-release-v' + latestVersion, '--tags'], { cwd: process.cwd() });
@@ -3257,7 +3257,7 @@ const fs_1 = __webpack_require__(747);
 const core_1 = __webpack_require__(470);
 function getPackageManifest(path) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (fs_1.existsSync(path)) {
+        if (!fs_1.existsSync(path)) {
             core_1.setFailed('package.json not found with ' + path);
             return {};
         }

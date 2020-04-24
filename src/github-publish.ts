@@ -12,7 +12,7 @@ export async function githubPublish(manifests: object[]): Promise<void> {
   await exec.exec('git', ['config', 'user.email', useremail], { cwd: process.cwd() });
 
   try {
-    await exec.exec('git', ['add', '-am', 'release: v' + latestVersion], { cwd: process.cwd() });
+    await exec.exec('git', ['commit', '-am', 'release: v' + latestVersion], { cwd: process.cwd() });
     await exec.exec('git', ['tag', 'v' + latestVersion], { cwd: process.cwd() });
     await exec.exec('git', ['branch', '-b', 'add-release-v' + latestVersion], { cwd: process.cwd() });
     await exec.exec('git', ['push', 'origin', 'add-release-v' + latestVersion, '--tags'], { cwd: process.cwd() });
