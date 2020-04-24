@@ -1285,8 +1285,8 @@ function npmPublish(workspace) {
         const projectPath = path.resolve(process.cwd(), workspace);
         const packageJSONPath = path.resolve(projectPath, 'package.json');
         const packageManifest = yield read_package_json_1.getPackageManifest(packageJSONPath);
+        core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
         try {
-            core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
             const code = yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`], { silent: true });
             core.info('code: ' + code);
             // 增加版本
@@ -1296,7 +1296,7 @@ function npmPublish(workspace) {
         }
         catch (error) {
             // 404
-            core.info('npm view error' + error.toString());
+            core.info('npm view error ' + error.toString());
         }
         yield exec.exec('npm', ['publish', `--registry=${core.getInput('registry')}`, core.getInput('tag:next') && '--tag=next'], {
             cwd: projectPath,

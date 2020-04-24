@@ -9,8 +9,8 @@ export async function npmPublish(workspace: string): Promise<{ [key: string]: an
   const projectPath = path.resolve(process.cwd(), workspace);
   const packageJSONPath = path.resolve(projectPath, 'package.json');
   const packageManifest = await getPackageManifest(packageJSONPath);
+  core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
   try {
-    core.info('NPM_AUTH_CODE: ' + process.env.NPM_AUTH_TOKEN);
     const code = await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`], { silent: true });
 
     core.info('code: ' + code);
@@ -20,7 +20,7 @@ export async function npmPublish(workspace: string): Promise<{ [key: string]: an
     fs.writeFileSync(packageJSONPath, pkgNoFormat.replace(/"version":(\s*)".*?"/, `"version":$1"${newVersion}"`));
   } catch (error) {
     // 404
-    core.info('npm view error' + error.toString());
+    core.info('npm view error ' + error.toString());
   }
 
   await exec.exec('npm', ['publish', `--registry=${core.getInput('registry')}`, core.getInput('tag:next') && '--tag=next'], {
