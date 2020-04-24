@@ -9,9 +9,11 @@ export async function npmPublish(workspace: string): Promise<{ [key: string]: an
   const projectPath = path.resolve(process.cwd(), workspace);
   const packageJSONPath = path.resolve(projectPath, 'package.json');
   const packageManifest = await getPackageManifest(packageJSONPath);
-  const info = await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
-
-  if (info) {
+  try {
+    await exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
+  } catch (error) {
+    // 404
+    core.info('npm view error' + error.toString());
     const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
     const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType') as semver.ReleaseType);
     fs.writeFileSync(packageJSONPath, pkgNoFormat.replace(/"version":(\s*)".*?"/, `"version":$1"${newVersion}"`));

@@ -1285,8 +1285,12 @@ function npmPublish(workspace) {
         const projectPath = path.resolve(process.cwd(), workspace);
         const packageJSONPath = path.resolve(projectPath, 'package.json');
         const packageManifest = yield read_package_json_1.getPackageManifest(packageJSONPath);
-        const info = yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
-        if (info) {
+        try {
+            yield exec.exec('npm', ['view', `${packageManifest.name}@${packageManifest.version}`]);
+        }
+        catch (error) {
+            // 404
+            core.info("npm view error" + error.toString());
             const pkgNoFormat = fs.readFileSync(packageJSONPath, 'utf8');
             const newVersion = semver.inc(packageManifest.version, core.getInput('releaseType'));
             fs.writeFileSync(packageJSONPath, pkgNoFormat.replace(/"version":(\s*)".*?"/, `"version":$1"${newVersion}"`));
