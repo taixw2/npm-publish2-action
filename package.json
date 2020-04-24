@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "npm-publish2-action",
+  "version": "1.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Publish a package to NPM registry",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -11,21 +11,28 @@
     "lint": "eslint src/**/*.ts",
     "pack": "ncc build",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run pack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/taixw2/npm-publish2-action"
   },
   "keywords": [
     "actions",
     "node",
     "setup"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "欧阳鑫",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.0.3",
+    "@actions/github": "^2.1.1",
+    "@types/semver": "^7.1.0",
+    "libnpmpublish": "^3.0.1",
+    "npm-package-arg": "^8.0.1",
+    "read-package-json": "^2.1.1",
+    "semver": "^7.3.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",

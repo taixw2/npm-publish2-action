@@ -1,19 +1,21 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import { npmPublish } from './npm-publish';
+import { githubPublish } from './github-publish';
 
 async function run(): Promise<void> {
+  const workspaces = core.getInput('workspaces').split(',');
+
+  // npm is required
+  await exec.exec('npm', ['--version']);
+
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
-
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const manifests = await Promise.all(workspaces.map(npmPublish));
+    if (!process.env.GITHUB_TOKEN) return;
+    githubPublish(manifests);
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error);
   }
 }
 
-run()
+run();
