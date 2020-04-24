@@ -17,7 +17,7 @@ inputs:
     default: https://registry.npmjs.org
 
   tag:next:
-    description: [Optional] publish tag with next
+    description: "[Optional] publish tag with next"
 runs:
   using: node12
   main: dist/index.js
